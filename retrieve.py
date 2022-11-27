@@ -8,7 +8,7 @@ import numpy as np
 from cleaning import clean_data
 cred = credentials.Certificate("D:\\Projects\\U-4cast\\credentials.json")
 firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://esp8266-real-time-61351-default-rtdb.asia-southeast1.firebasedatabase.app/start'
+    'databaseURL': 'https://u-4cast-93360-default-rtdb.asia-southeast1.firebasedatabase.app/start'
 })
 
 while(True):
@@ -21,4 +21,4 @@ while(True):
         writer.writerow(v)
     data = pd.read_csv("data.csv")
     clean_data(data)
-    time.sleep(1)
+    time.sleep(180)

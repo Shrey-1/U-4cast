@@ -67,7 +67,7 @@ if selected == "Prediction":
         with col1:
             st.metric(label="Temperature", value=f"{temperature}°C")
         with col2:
-            st.metric(label="Humidity", value=f"{humidity}%")
+            st.metric(label="Humidity", value=f"{humidity} g/Kg")
         with col3:
             st.metric(label="Pressure", value=f"{pressure} hPa")
         with col4:
