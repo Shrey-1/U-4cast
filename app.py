@@ -7,10 +7,19 @@ from streamlit_option_menu import option_menu  # pip install streamlit-option-me
 
 import streamlit as st
 import requests
+import pandas as pd
+
+import visualise as vs
+import analysis as an
+
 API_KEY = "de2a75d1a88024ed8127b638d9773d4d"
 lat = "30.4"
 lon = "77.9"
 city = "bidholi"
+
+df = pd.read_csv("D:\\Projects\\U-4cast\\data\\data.csv") #importing the dataset
+
+# https://api.openweathermap.org/data/2.5/weather?q=bidholi&appid=de2a75d1a88024ed8127b638d9773d4d&units=metric
 
 def find_current_weather(city):
     base_url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
@@ -24,7 +33,7 @@ def find_current_weather(city):
         pressure = weather_data['main']['pressure']
         icon = f"http://openweathermap.org/img/wn/{icon_id}@2x.png"
     except KeyError:
-        st.error("City Not Found")
+        st.error("Data Not Found")
         st.stop()
     return general,temperature,icon,wind,humidity,pressure
 
@@ -36,19 +45,19 @@ st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)
 st.title(page_title + " " + page_icon)
 
 # --- HIDE STREAMLIT STYLE ---
-hide_st_style = """
-            <style>
-            #MainMenu {visibility: hidden;}
-            footer {visibility: hidden;}
-            header {visibility: hidden;}
-            </style>
-            """
-st.markdown(hide_st_style, unsafe_allow_html=True)
+# hide_st_style = """
+#             <style>
+#             #MainMenu {visibility: hidden;}
+#             footer {visibility: hidden;}
+#             header {visibility: hidden;}
+#             </style>
+#             """
+# st.markdown(hide_st_style, unsafe_allow_html=True)
 
 # --- NAVIGATION MENU ---
 selected = option_menu(
     menu_title=None,
-    options=["Prediction", "Visualization", "Analysis"],
+    options=["Prediction", "Analysis", "Visualization"],
     icons=["pencil-fill", "bar-chart-fill", "bar-chart-fill"],  # https://icons.getbootstrap.com/
     orientation="horizontal",
 )
@@ -63,25 +72,53 @@ if selected == "Prediction":
             st.image(icon)
         "---"
         st.subheader(f"Current Weather: {general}" )
-        col1, col2, col3, col4 = st.columns(4)
+        col1, col2, col3 = st.columns(3)
         with col1:
             st.metric(label="Temperature", value=f"{temperature}°C")
         with col2:
-            st.metric(label="Humidity", value=f"{humidity} g/Kg")
+            st.metric(label="Humidity", value=f"{pressure} %")
         with col3:
-            st.metric(label="Pressure", value=f"{pressure} hPa")
-        with col4:
-            wind = wind*(18/5)
-            wind = "{:.2f}".format(wind)
-            st.metric(label="Wind", value=f"{wind} Km/hr")
-
-        # st.image(icon)
+            st.metric(label="Barometric Pressure", value=f"{humidity} hPa")
 
         "---"
         submitted = st.form_submit_button("Refresh")
 
 if selected == "Visualization":
     st.header("Weather Visualization")
+    # st.subheader("Weather Data")
+    gh1 = vs.date_vs_avg_temp(df)
+    st.plotly_chart(gh1)
+    gh2 = vs.date_vs_max_min_temp(df)
+    st.plotly_chart(gh2)
+    gh3 = vs.date_vs_humidity(df)
+    st.plotly_chart(gh3)
+    gh4 = vs.rainstatus(df)
+    st.plotly_chart(gh4)
+    gh5 = vs.weather(df)
+    st.plotly_chart(gh5)
+    gh6 = vs.pastweek_temp(df)
+    st.plotly_chart(gh6)
+    # gh7 = vs.pastweek_aqi(df)
+    # st.plotly_chart(gh7)
 
 if selected == "Analysis":
-    st.header("Weather Analysis")
+    st.subheader("Cleaned Data")
+    st.write(df)
+    st.subheader("Highest Temperature Recorded")
+    gh1 = an.max_temp_date(df)
+    gh2 = an.max_temp(df)
+    st.write(gh1, ":", gh2)
+    st.subheader("Lowest Temperature Recorded")
+    gh1 = an.min_temp_date(df)
+    gh2 = an.min_temp(df)
+    st.write(gh1, ":", gh2)
+    col1, col2 = st.columns(2)
+    st.subheader("Rain Status")
+    gh3 = an.rain_status(df)
+    st.write(gh3)
+    st.subheader("Weather Count")
+    gh4 = an.weather_count(df)
+    st.write(gh4)
+    # st.subheader("Storm Chances")
+    # gh5 = an.storm_chances(df)
+    # st.write(gh5)
