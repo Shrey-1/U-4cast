@@ -17,7 +17,7 @@ lat = "30.4"
 lon = "77.9"
 city = "bidholi"
 
-df = pd.read_csv("D:\\Projects\\U-4cast\\data\\data.csv") #importing the dataset
+df = pd.read_csv("data\data.csv") #importing the dataset
 
 # https://api.openweathermap.org/data/2.5/weather?q=bidholi&appid=de2a75d1a88024ed8127b638d9773d4d&units=metric
 
