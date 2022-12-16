@@ -1,1 +1,3 @@
 plotly
+streamlit-option-menu
+requests
