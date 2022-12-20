@@ -11,6 +11,7 @@ import pandas as pd
 
 import visualise as vs
 import analysis as an
+import model as md
 
 API_KEY = "de2a75d1a88024ed8127b638d9773d4d"
 lat = "30.4"
@@ -18,8 +19,6 @@ lon = "77.9"
 city = "bidholi"
 
 df = pd.read_csv("data/data.csv") #importing the dataset
-
-# https://api.openweathermap.org/data/2.5/weather?q=bidholi&appid=de2a75d1a88024ed8127b638d9773d4d&units=metric
 
 def find_current_weather(city):
     base_url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
@@ -45,14 +44,14 @@ st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)
 st.title(page_title + " " + page_icon)
 
 # --- HIDE STREAMLIT STYLE ---
-# hide_st_style = """
-#             <style>
-#             #MainMenu {visibility: hidden;}
-#             footer {visibility: hidden;}
-#             header {visibility: hidden;}
-#             </style>
-#             """
-# st.markdown(hide_st_style, unsafe_allow_html=True)
+hide_st_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            header {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_st_style, unsafe_allow_html=True)
 
 # --- NAVIGATION MENU ---
 selected = option_menu(
@@ -79,6 +78,11 @@ if selected == "Prediction":
             st.metric(label="Humidity", value=f"{pressure} %")
         with col3:
             st.metric(label="Barometric Pressure", value=f"{humidity} hPa")
+        
+        st.subheader("Forecast")
+        st.image("data\Figure_2.png")
+        # gh1 = md.plot_forecast(df)
+        # st.plotly_chart(gh1)
 
         "---"
         submitted = st.form_submit_button("Refresh")
